@@ -5,6 +5,7 @@ function App() {
   const [explicacao, setExplicacao] = useState(null);
   const [resultado, setResultado] = useState(null);
 
+  // Envia os arquivos para o backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -28,15 +29,18 @@ function App() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>LMS Evaluator</h1>
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>Aula (txt ou pptx):</label><br />
           <input type="file" onChange={(e) => setAula(e.target.files[0])} required />
         </div>
+
         <div style={{ marginTop: '1rem' }}>
           <label>Explicação do aluno (texto, áudio, vídeo ou slides):</label><br />
           <input type="file" onChange={(e) => setExplicacao(e.target.files[0])} required />
         </div>
+
         <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
