@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 function App() {
-  const [aula, setAula] = useState(null)
-  const [explicacao, setExplicacao] = useState(null)
-  const [resultado, setResultado] = useState(null)
+  const [aula, setAula] = useState(null);
+  const [explicacao, setExplicacao] = useState(null);
+  const [resultado, setResultado] = useState(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append('aula', aula)
-    formData.append('explicacao', explicacao)
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('aula', aula);
+    formData.append('producao', explicacao);
 
     const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
       method: 'POST',
       body: formData
-    })
+    });
 
-    const data = await res.json()
-    setResultado(data.resultado || data.avaliacao_gerada || 'Nenhum resultado recebido.')
-  }
+    const data = await res.json();
+    setResultado(data?.avaliacao_gerada || 'Não foi possível gerar o feedback.');
+  };
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -36,13 +36,19 @@ function App() {
       </form>
 
       {resultado && (
-        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', backgroundColor: '#f0f0f0', padding: '1rem', borderRadius: '8px' }}>
+        <div style={{
+          marginTop: '2rem',
+          backgroundColor: '#f4f4f4',
+          padding: '1rem',
+          borderRadius: '8px',
+          whiteSpace: 'pre-wrap'
+        }}>
           <h2>Resultado</h2>
           <p>{resultado}</p>
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
