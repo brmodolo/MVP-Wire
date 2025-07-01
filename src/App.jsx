@@ -9,7 +9,7 @@ function App() {
     e.preventDefault()
     const formData = new FormData()
     formData.append('aula', aula)
-    formData.append('producao', explicacao)
+    formData.append('explicacao', explicacao)
 
     const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
       method: 'POST',
@@ -17,7 +17,7 @@ function App() {
     })
 
     const data = await res.json()
-    setResultado(data?.avaliacao_gerada || 'Não foi possível gerar o feedback.')
+    setResultado(data.resultado || data.avaliacao_gerada || 'Nenhum resultado recebido.')
   }
 
   return (
@@ -36,13 +36,7 @@ function App() {
       </form>
 
       {resultado && (
-        <div style={{
-          marginTop: '2rem',
-          backgroundColor: '#f4f4f4',
-          padding: '1rem',
-          borderRadius: '8px',
-          whiteSpace: 'pre-wrap'
-        }}>
+        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', backgroundColor: '#f0f0f0', padding: '1rem', borderRadius: '8px' }}>
           <h2>Resultado</h2>
           <p>{resultado}</p>
         </div>
