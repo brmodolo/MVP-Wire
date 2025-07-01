@@ -55,8 +55,9 @@ function App() {
             : <p style={{ color: 'red' }}>{resultado.erro || 'Erro inesperado.'}</p>}
         </div>
       )}
-    </div> // <- ESTA DIV PRECISA ESTAR AQUI PARA FECHAR A <div> DO return
+    </div>
   )
 }
 
 export default App
+
