@@ -5,29 +5,23 @@ function App() {
   const [aula, setAula] = useState(null)
   const [explicacao, setExplicacao] = useState(null)
   const [resultado, setResultado] = useState(null)
-  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    setResultado(null)
-
     const formData = new FormData()
     formData.append('aula', aula)
-    formData.append('explicacao', explicacao)
+    formData.append('producao', explicacao)
 
     try {
       const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
         method: 'POST',
         body: formData
       })
-
       const data = await res.json()
-      setResultado(data)
-    } catch (error) {
-      setResultado({ erro: 'Erro ao conectar com o servidor.' })
-    } finally {
-      setLoading(false)
+      if (!res.ok) throw new Error(data.erro || 'Erro na requisição')
+      setResultado(data.avaliacao_gerada || data)
+    } catch (err) {
+      setResultado({ erro: err.message })
     }
   }
 
@@ -43,18 +37,18 @@ function App() {
           <label>Explicação do aluno (texto, áudio, vídeo ou slides):</label><br />
           <input type="file" onChange={e => setExplicacao(e.target.files[0])} required />
         </div>
-        <button type="submit" style={{ marginTop: '1rem' }}>
-          {loading ? 'Enviando...' : 'Enviar'}
-        </button>
+        <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
       {resultado && (
-        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap' }}>
-          <h2>Resultado</h2>
+        <div style={{ marginTop: '2rem' }}>
+          <h2>Resultado da Avaliação</h2>
           {resultado.erro ? (
-            <p style={{ color: 'red' }}>Erro: {resultado.erro}</p>
+            <div style={{ color: 'red' }}>Erro: {resultado.erro}</div>
           ) : (
-            <pre>{JSON.stringify(resultado, null, 2)}</pre>
+            <pre style={{ whiteSpace: 'pre-wrap', background: '#f0f0f0', padding: '1rem' }}>
+              {resultado}
+            </pre>
           )}
         </div>
       )}
