@@ -1,54 +1,61 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
-  const [audioFile, setAudioFile] = useState(null);
+  const [video, setVideo] = useState(null);
+  const [audio, setAudio] = useState(null);
   const [resultado, setResultado] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState(null);
+  const [erro, setErro] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!audioFile) return;
+
+    if (!video || !audio) {
+      setErro('Por favor, selecione os dois arquivos.');
+      return;
+    }
 
     const formData = new FormData();
-    formData.append('audio', audioFile);
-
-    setLoading(true);
-    setErro(null);
+    formData.append('video', video);
+    formData.append('audio', audio);
 
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
-      if (!response.ok) throw new Error('Erro na requisição');
+      if (!response.ok) {
+        throw new Error('Erro ao enviar os arquivos.');
+      }
 
       const data = await response.json();
       setResultado(data);
+      setErro('');
     } catch (err) {
       setErro('Ocorreu um erro ao enviar os arquivos.');
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>MVP Wire - Avaliação de Aprendizagem</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".wav"
-          onChange={(e) => setAudioFile(e.target.files[0])}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Enviando...' : 'Enviar'}
-        </button>
+    <div style={{ padding: '2rem' }}>
+      <h1>Validador de Produção</h1>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+        <div>
+          <label>Vídeo do Professor:</label><br />
+          <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files[0])} />
+        </div>
+        <div style={{ marginTop: '1rem' }}>
+          <label>Áudio do Aluno:</label><br />
+          <input type="file" accept="audio/*" onChange={(e) => setAudio(e.target.files[0])} />
+        </div>
+        <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
       {erro && (
-        <p style={{ color: 'red', marginTop: '1rem' }}>{erro}</p>
+        <div style={{ color: 'red', marginBottom: '1rem' }}>
+          {erro}
+        </div>
       )}
 
       {resultado && (
