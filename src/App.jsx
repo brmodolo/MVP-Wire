@@ -12,13 +12,17 @@ function App() {
     formData.append('aula', aula)
     formData.append('explicacao', explicacao)
 
-    const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
-      method: 'POST',
-      body: formData
-    })
+    try {
+      const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
+        method: 'POST',
+        body: formData
+      })
 
-    const data = await res.json()
-    setResultado(data)
+      const data = await res.json()
+      setResultado(data)
+    } catch (error) {
+      setResultado({ erro: 'Erro ao enviar os arquivos ou processar a resposta.' })
+    }
   }
 
   return (
@@ -39,7 +43,18 @@ function App() {
       {resultado && (
         <div style={{ marginTop: '2rem' }}>
           <h2>Resultado</h2>
-          <pre>{JSON.stringify(resultado, null, 2)}</pre>
+          {resultado.avaliacao_gerada ? (
+            <>
+              <p><strong>Avaliação gerada:</strong></p>
+              <p style={{ background: '#f0f0f0', padding: '1rem', borderRadius: '5px' }}>
+                {resultado.avaliacao_gerada}
+              </p>
+            </>
+          ) : resultado.erro ? (
+            <p style={{ color: 'red' }}>{resultado.erro}</p>
+          ) : (
+            <pre>{JSON.stringify(resultado, null, 2)}</pre>
+          )}
         </div>
       )}
     </div>
@@ -47,3 +62,4 @@ function App() {
 }
 
 export default App
+
