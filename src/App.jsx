@@ -54,20 +54,18 @@ function App() {
         </button>
       </form>
 
-      {resultado && (
-        <div style={{
-          marginTop: '2rem',
-          backgroundColor: '#f4f4f4',
-          padding: '1rem',
-          borderRadius: '8px',
-          whiteSpace: 'pre-wrap'
-        }}>
-          <h2>Resultado</h2>
-          <p>{resultado.avaliacao_gerada || 'Nenhuma avaliação retornada.'}</p>
-        </div>
-      )}
+    {resultado && (
+    <div style={{
+      marginTop: '2rem',
+      backgroundColor: '#f4f4f4',
+      padding: '1rem',
+      borderRadius: '8px',
+      whiteSpace: 'pre-wrap'
+    }}>
+      <h2>Resultado</h2>
+      <p>{resultado.avaliacao_gerada || 'Nenhuma avaliação retornada.'}</p>
     </div>
-  )
+  )}
 }
-
+  
 export default App
