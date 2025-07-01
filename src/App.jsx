@@ -5,9 +5,13 @@ function App() {
   const [aula, setAula] = useState(null)
   const [explicacao, setExplicacao] = useState(null)
   const [resultado, setResultado] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setResultado(null)
+
     const formData = new FormData()
     formData.append('aula', aula)
     formData.append('producao', explicacao)
@@ -17,16 +21,18 @@ function App() {
         method: 'POST',
         body: formData
       })
+
       const data = await res.json()
-      if (!res.ok) throw new Error(data.erro || 'Erro na requisição')
-      setResultado(data.avaliacao_gerada || data)
+      setResultado(data.avaliacao_gerada || JSON.stringify(data, null, 2))
     } catch (err) {
-      setResultado({ erro: err.message })
+      setResultado("Erro ao enviar os dados. Verifique o backend.")
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '600px', margin: 'auto' }}>
       <h1>LMS Evaluator</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -40,16 +46,12 @@ function App() {
         <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
+      {loading && <p>Processando...</p>}
+
       {resultado && (
-        <div style={{ marginTop: '2rem' }}>
-          <h2>Resultado da Avaliação</h2>
-          {resultado.erro ? (
-            <div style={{ color: 'red' }}>Erro: {resultado.erro}</div>
-          ) : (
-            <pre style={{ whiteSpace: 'pre-wrap', background: '#f0f0f0', padding: '1rem' }}>
-              {resultado}
-            </pre>
-          )}
+        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', backgroundColor: '#f7f7f7', padding: '1rem', borderRadius: '8px' }}>
+          <h2>Resultado</h2>
+          <p>{resultado}</p>
         </div>
       )}
     </div>
