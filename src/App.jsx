@@ -49,13 +49,10 @@ function App() {
       {loading && <p>Processando...</p>}
 
       {resultado && (
-        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', backgroundColor: '#f7f7f7', padding: '1rem', borderRadius: '8px' }}>
-          <h2>Resultado</h2>
-          <p>{resultado}</p>
-        </div>
-      )}
-    </div>
-  )
-}
+  <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', backgroundColor: '#f7f7f7', padding: '1rem', borderRadius: '8px' }}>
+    <h2>Resultado</h2>
+    <p>{resultado.avaliacao_gerada}</p>
+  </div>
+)}
 
 export default App
