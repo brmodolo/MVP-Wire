@@ -5,13 +5,14 @@ function App() {
   const [explicacao, setExplicacao] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState(null);
-  const [carregando, setCarregando] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErro(null);
+    setResultado(null);
 
     if (!aula || !explicacao) {
-      setErro('Por favor, selecione os dois arquivos.');
+      setErro('Por favor, envie os dois arquivos.');
       return;
     }
 
@@ -19,49 +20,44 @@ function App() {
     formData.append('aula', aula);
     formData.append('explicacao', explicacao);
 
-    setCarregando(true);
-    setErro(null);
-    setResultado(null);
-
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar', {
         method: 'POST',
         body: formData,
       });
 
+      const text = await response.text();
+      console.log('Resposta bruta do backend:', text);
+
       if (!response.ok) {
-        throw new Error('Erro na requisição');
+        throw new Error(text || 'Erro na requisição');
       }
 
-      const data = await response.json();
+      const data = JSON.parse(text);
       setResultado(data);
     } catch (err) {
-      console.error(err);
+      console.error('Erro ao enviar arquivos:', err);
       setErro('Ocorreu um erro ao enviar os arquivos.');
-    } finally {
-      setCarregando(false);
     }
   };
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Validação de Aprendizagem</h1>
-      <form onSubmit={handleSubmit} style={{ marginTop: '2rem' }}>
-        <div>
-          <label>Aula (vídeo ou texto): </label>
-          <input type="file" onChange={(e) => setAula(e.target.files[0])} accept="video/*,.txt" />
+      <h1>Avaliador de Aprendizagem Ativa</h1>
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Arquivo da aula (ex: .txt): </label>
+          <input type="file" accept=".txt,.pdf,.pptx" onChange={(e) => setAula(e.target.files[0])} />
         </div>
-        <div style={{ marginTop: '1rem' }}>
-          <label>Explicação do aluno (áudio, vídeo ou texto): </label>
-          <input type="file" onChange={(e) => setExplicacao(e.target.files[0])} accept="audio/*,video/*,.txt" />
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Arquivo da explicação do aluno (ex: .wav, .mp4, .txt): </label>
+          <input type="file" accept=".wav,.mp4,.txt" onChange={(e) => setExplicacao(e.target.files[0])} />
         </div>
-        <button type="submit" style={{ marginTop: '1.5rem' }} disabled={carregando}>
-          {carregando ? 'Enviando...' : 'Enviar'}
-        </button>
+        <button type="submit">Enviar</button>
       </form>
 
       {erro && (
-        <div style={{ marginTop: '2rem', color: 'red' }}>
+        <div style={{ color: 'red', marginTop: '1rem' }}>
           <strong>{erro}</strong>
         </div>
       )}
@@ -75,8 +71,8 @@ function App() {
           whiteSpace: 'pre-wrap'
         }}>
           <h2>Resultado</h2>
-          <p><strong>Tema:</strong> {resultado.tema}</p>
-          <p><strong>Transcrição:</strong> {resultado.transcricao_producao}</p>
+          <p><strong>Tema:</strong> {resultado.tema || 'N/A'}</p>
+          <p><strong>Transcrição:</strong> {resultado.transcricao_producao || 'N/A'}</p>
           <p><strong>Similaridade:</strong> {resultado.similaridade_percentual}%</p>
         </div>
       )}
