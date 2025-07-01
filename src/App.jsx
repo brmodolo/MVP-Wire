@@ -12,18 +12,13 @@ function App() {
     formData.append('aula', aula)
     formData.append('producao', explicacao)
 
-    try {
-      const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
-        method: 'POST',
-        body: formData
-      })
+    const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
+      method: 'POST',
+      body: formData
+    })
 
-      const data = await res.json()
-      setResultado(data)
-    } catch (error) {
-      console.error('Erro ao enviar:', error)
-      setResultado({ erro: 'Falha na conexão com o servidor' })
-    }
+    const data = await res.json()
+    setResultado(data?.avaliacao_gerada || 'Não foi possível gerar o feedback.')
   }
 
   return (
@@ -44,15 +39,13 @@ function App() {
       {resultado && (
         <div style={{
           marginTop: '2rem',
-          whiteSpace: 'pre-wrap',
-          backgroundColor: '#f7f7f7',
+          backgroundColor: '#f4f4f4',
           padding: '1rem',
-          borderRadius: '8px'
+          borderRadius: '8px',
+          whiteSpace: 'pre-wrap'
         }}>
           <h2>Resultado</h2>
-          {resultado.avaliacao_gerada
-            ? <p>{resultado.avaliacao_gerada}</p>
-            : <p style={{ color: 'red' }}>{resultado.erro || 'Erro inesperado.'}</p>}
+          <p>{resultado}</p>
         </div>
       )}
     </div>
@@ -60,4 +53,3 @@ function App() {
 }
 
 export default App
-
