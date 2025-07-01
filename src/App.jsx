@@ -12,7 +12,7 @@ function App() {
     formData.append('aula', aula)
     formData.append('explicacao', explicacao)
 
-    const res = await fetch('https://testelms.onrender.com/avaliar/', {
+    const res = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
       method: 'POST',
       body: formData
     })
