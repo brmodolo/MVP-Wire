@@ -27,8 +27,6 @@ function App() {
       });
 
       const text = await response.text();
-      console.log('Resposta bruta do backend:', text);
-
       if (!response.ok) {
         throw new Error(text || 'Erro na requisição');
       }
@@ -44,13 +42,14 @@ function App() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
       <h1>Avaliador de Aprendizagem Ativa</h1>
+
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
-          <label>Arquivo da aula (ex: .txt): </label>
-          <input type="file" accept=".txt,.pdf,.pptx" onChange={(e) => setAula(e.target.files[0])} />
+          <label>Arquivo da aula (.txt, .pptx): </label>
+          <input type="file" accept=".txt,.pptx" onChange={(e) => setAula(e.target.files[0])} />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label>Arquivo da explicação do aluno (ex: .wav, .mp4, .txt): </label>
+          <label>Explicação do aluno (.wav, .mp4, .txt): </label>
           <input type="file" accept=".wav,.mp4,.txt" onChange={(e) => setExplicacao(e.target.files[0])} />
         </div>
         <button type="submit">Enviar</button>
@@ -73,7 +72,7 @@ function App() {
           <h2>Resultado</h2>
           <p><strong>Tema:</strong> {resultado.tema || 'N/A'}</p>
           <p><strong>Transcrição:</strong> {resultado.transcricao_producao || 'N/A'}</p>
-          <p><strong>Similaridade:</strong> {resultado.similaridade_percentual}%</p>
+          <p><strong>Similaridade:</strong> {resultado.similaridade_percentual ?? 'N/A'}%</p>
         </div>
       )}
     </div>
