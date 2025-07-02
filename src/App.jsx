@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 
 function App() {
-  const [video, setVideo] = useState(null);
-  const [audio, setAudio] = useState(null);
+  const [aula, setAula] = useState(null);  // txt do professor
+  const [audio, setAudio] = useState(null); // áudio do aluno
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!video || !audio) {
+    if (!aula || !audio) {
       setErro('Por favor, selecione os dois arquivos.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('video', video);
+    formData.append('video', aula);  // ainda usamos "video" para compatibilidade com o backend
     formData.append('audio', audio);
 
     try {
@@ -42,8 +42,8 @@ function App() {
       <h1>Validador de Produção</h1>
       <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
         <div>
-          <label>Vídeo do Professor:</label><br />
-          <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files[0])} />
+          <label>Aula do Professor (.txt):</label><br />
+          <input type="file" accept=".txt" onChange={(e) => setAula(e.target.files[0])} />
         </div>
         <div style={{ marginTop: '1rem' }}>
           <label>Áudio do Aluno:</label><br />
