@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 
 function App() {
-  const [aula, setAula] = useState(null);  // txt do professor
-  const [audio, setAudio] = useState(null); // áudio do aluno
+  const [video, setVideo] = useState(null);
+  const [audio, setAudio] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!aula || !audio) {
+    if (!video || !audio) {
       setErro('Por favor, selecione os dois arquivos.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('video', aula);  // ainda usamos "video" para compatibilidade com o backend
+    formData.append('video', video);
     formData.append('audio', audio);
 
     try {
@@ -25,15 +25,15 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao enviar os arquivos.');
+        throw new Error(`Erro ao enviar os arquivos: ${response.statusText}`);
       }
 
       const data = await response.json();
       setResultado(data);
       setErro('');
     } catch (err) {
-      setErro('Ocorreu um erro ao enviar os arquivos.');
-      console.error(err);
+      setErro(`Ocorreu um erro: ${err.message}`);
+      console.error('Erro ao enviar arquivos:', err);
     }
   };
 
@@ -42,8 +42,8 @@ function App() {
       <h1>Validador de Produção</h1>
       <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
         <div>
-          <label>Aula do Professor (.txt):</label><br />
-          <input type="file" accept=".txt" onChange={(e) => setAula(e.target.files[0])} />
+          <label>Vídeo do Professor:</label><br />
+          <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files[0])} />
         </div>
         <div style={{ marginTop: '1rem' }}>
           <label>Áudio do Aluno:</label><br />
