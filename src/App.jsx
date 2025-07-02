@@ -15,9 +15,9 @@ function App() {
     }
 
     const formData = new FormData();
-    formData.append('aula', texto);            // Nome correto esperado pelo backend
-    formData.append('producao', audio);        // Nome correto esperado pelo backend
-    formData.append('tema', '');               // Obrigatório pelo backend, mesmo que vazio
+    formData.append('aula', texto);             // campo correto!
+    formData.append('producao', audio);         // campo correto!
+    formData.append('tema', 'Teste');           // campo obrigatório!
 
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
@@ -44,7 +44,7 @@ function App() {
       <h1>Validador de Produção</h1>
       <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
         <div>
-          <label>Texto da Aula (professor - .txt):</label><br />
+          <label>Texto da Aula (.txt):</label><br />
           <input type="file" accept=".txt" onChange={(e) => setTexto(e.target.files[0])} />
         </div>
         <div style={{ marginTop: '1rem' }}>
@@ -54,11 +54,7 @@ function App() {
         <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
-      {erro && (
-        <div style={{ color: 'red', marginBottom: '1rem' }}>
-          {erro}
-        </div>
-      )}
+      {erro && <div style={{ color: 'red', marginBottom: '1rem' }}>{erro}</div>}
 
       {resultado && (
         <div style={{
