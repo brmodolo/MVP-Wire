@@ -15,8 +15,9 @@ function App() {
     }
 
     const formData = new FormData();
-    formData.append('video', texto); // backend espera 'video' = aula
-    formData.append('audio', audio); // backend espera 'audio' = aluno
+    formData.append('aula', texto);            // Nome correto esperado pelo backend
+    formData.append('producao', audio);        // Nome correto esperado pelo backend
+    formData.append('tema', '');               // Obrigatório pelo backend, mesmo que vazio
 
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
