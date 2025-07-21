@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 
 function App() {
-  const [audio, setAudio] = useState(null); // apenas o áudio do aluno
-  const [tema, setTema] = useState('');     // tema digitado
+  const [audio, setAudio] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!audio || !tema.trim()) {
-      setErro('Por favor, selecione o áudio do aluno e informe o tema.');
+    if (!audio) {
+      setErro('Por favor, selecione o áudio do aluno (.wav).');
       return;
     }
 
     const formData = new FormData();
     formData.append('producao', audio);
-    formData.append('tema', tema);
+    formData.append('tema', 'Tema não fornecido no frontend'); // valor padrão ou dummy, exigido pelo backend
 
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
@@ -39,30 +38,22 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ padding: '2rem' }}>
       <h1>Validador de Produção</h1>
       <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label><strong>Tema:</strong></label><br />
+        <div>
+          <label>Áudio do Aluno (.wav):</label><br />
           <input
-            type="text"
-            value={tema}
-            onChange={(e) => setTema(e.target.value)}
-            placeholder="Digite o tema da aula"
-            style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
+            type="file"
+            accept="audio/wav"
+            onChange={(e) => setAudio(e.target.files[0])}
           />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <label><strong>Áudio do Aluno (.wav):</strong></label><br />
-          <input type="file" accept="audio/wav" onChange={(e) => setAudio(e.target.files[0])} />
-        </div>
-        <button type="submit" style={{ padding: '0.5rem 1rem', fontSize: '1rem' }}>Enviar</button>
+        <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
       {erro && (
-        <div style={{ color: 'red', marginBottom: '1rem' }}>
-          {erro}
-        </div>
+        <div style={{ color: 'red', marginBottom: '1rem' }}>{erro}</div>
       )}
 
       {resultado && (
@@ -74,12 +65,9 @@ function App() {
           whiteSpace: 'pre-wrap'
         }}>
           <h2>Resultado</h2>
-          <p><strong>Tema:</strong> {resultado.tema}</p>
           <p><strong>Transcrição:</strong> {resultado.transcricao_producao}</p>
           <p><strong>Similaridade:</strong> {resultado.similaridade_percentual}%</p>
-          {resultado.feedback && (
-            <p><strong>Feedback:</strong> {resultado.feedback}</p>
-          )}
+          <p><strong>Feedback:</strong> {resultado.feedback}</p>
         </div>
       )}
     </div>
