@@ -9,13 +9,13 @@ function App() {
     e.preventDefault();
 
     if (!audio) {
-      setErro('Por favor, selecione o áudio do aluno (.wav).');
+      setErro('Por favor, selecione o arquivo de áudio do aluno.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('producao', audio);
-    formData.append('tema', 'Tema não fornecido no frontend'); // valor padrão ou dummy, exigido pelo backend
+    formData.append('producao', audio); // nome correto esperado pelo backend
+    formData.append('tema', 'Tema genérico'); // ainda é necessário enviar um tema
 
     try {
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
@@ -43,17 +43,15 @@ function App() {
       <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
         <div>
           <label>Áudio do Aluno (.wav):</label><br />
-          <input
-            type="file"
-            accept="audio/wav"
-            onChange={(e) => setAudio(e.target.files[0])}
-          />
+          <input type="file" accept="audio/*" onChange={(e) => setAudio(e.target.files[0])} />
         </div>
         <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
       </form>
 
       {erro && (
-        <div style={{ color: 'red', marginBottom: '1rem' }}>{erro}</div>
+        <div style={{ color: 'red', marginBottom: '1rem' }}>
+          {erro}
+        </div>
       )}
 
       {resultado && (
