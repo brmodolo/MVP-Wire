@@ -46,7 +46,7 @@ function App() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
       <h1 style={{ fontSize: '1.5rem' }}>
-        Envie sua explicação em um arquivo de áudio, e confira o quanto aprendeu sobre o conteúdo.
+        Envie sua explicação em um arquivo de áudio e confira o quanto aprendeu sobre o conteúdo.
       </h1>
 
       <form onSubmit={handleSubmit} style={{ marginTop: '2rem', marginBottom: '1rem' }}>
