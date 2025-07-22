@@ -4,6 +4,7 @@ function App() {
   const [audio, setAudio] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,10 +15,14 @@ function App() {
     }
 
     const formData = new FormData();
-    formData.append('producao', audio); // nome correto esperado pelo backend
-    formData.append('tema', 'Tema genérico'); // ainda é necessário enviar um tema
+    formData.append('producao', audio);
+    formData.append('tema', 'Tema genérico');
 
     try {
+      setCarregando(true);
+      setResultado(null);
+      setErro('');
+
       const response = await fetch('https://mvp-wire-back.onrender.com/avaliar/', {
         method: 'POST',
         body: formData,
@@ -30,26 +35,59 @@ function App() {
 
       const data = await response.json();
       setResultado(data);
-      setErro('');
     } catch (err) {
       console.error(err);
       setErro(`Ocorreu um erro: ${err.message}`);
+    } finally {
+      setCarregando(false);
     }
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Validador de Produção</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-        <div>
-          <label>Áudio do Aluno (.wav):</label><br />
-          <input type="file" accept="audio/*" onChange={(e) => setAudio(e.target.files[0])} />
-        </div>
-        <button type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
+    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+      <h1 style={{ fontSize: '1.5rem' }}>
+        Envie sua explicação em um arquivo de áudio, e confira o quanto aprendeu sobre o conteúdo.
+      </h1>
+
+      <form onSubmit={handleSubmit} style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+        <label>Áudio do Aluno (.wav):</label><br />
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={(e) => setAudio(e.target.files[0])}
+          style={{ marginTop: '0.5rem' }}
+        /><br />
+        <button type="submit" disabled={carregando} style={{ marginTop: '1rem' }}>
+          Enviar
+        </button>
       </form>
 
+      {carregando && (
+        <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center' }}>
+          <div style={{
+            border: '4px solid #ccc',
+            borderTop: '4px solid #333',
+            borderRadius: '50%',
+            width: '24px',
+            height: '24px',
+            marginRight: '10px',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <span>Processando... isso pode levar alguns segundos.</span>
+
+          <style>
+            {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+        </div>
+      )}
+
       {erro && (
-        <div style={{ color: 'red', marginBottom: '1rem' }}>
+        <div style={{ color: 'red', marginTop: '1rem' }}>
           {erro}
         </div>
       )}
